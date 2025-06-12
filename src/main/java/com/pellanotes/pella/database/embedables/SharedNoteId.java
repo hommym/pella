@@ -1,0 +1,40 @@
+package com.pellanotes.pella.database.embedables;
+
+import java.io.Serializable;
+import java.util.Objects;
+
+import jakarta.persistence.Embeddable;
+
+// this composite primary key for SharedNote table
+
+@Embeddable
+public class SharedNoteId implements Serializable{
+
+    
+    Long recipientId;
+
+    Long noteBookId;
+
+    public SharedNoteId() {} // needed for embeddables
+
+    public SharedNoteId(Long recipientId,Long noteBookId){
+
+            this.recipientId=recipientId;
+            this.noteBookId=noteBookId;
+    }
+
+       @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof SharedNoteId)) return false;
+            SharedNoteId that = (SharedNoteId) o;
+            return Objects.equals(recipientId, that.recipientId) &&
+                Objects.equals(noteBookId, that.noteBookId);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(recipientId, noteBookId);
+        }
+
+}

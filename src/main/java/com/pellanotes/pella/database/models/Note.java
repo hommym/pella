@@ -1,6 +1,5 @@
 package com.pellanotes.pella.database.models;
 
-
 import java.time.LocalDate;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -11,52 +10,48 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
-
 @Entity
-@Table(name="note_book")
-public class NoteBook {
- 
+@Table(name="note")
+public class Note {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private  Long id;
-
+    private Long id;
 
     String title;
 
-    @Column(name="owner_id",insertable=false,updatable=false)
-    private Long ownerId;
+    String content; 
+    
+    @Column(name="note_book_id",insertable=false,updatable=false)
+    private Long noteBookId;
 
-
-    private boolean isDefault=false;
+    @OneToOne
+    @JoinColumn(name="note_book_id")
+    NoteBook noteBook;
 
     @Column(name="created_at")
     @CreationTimestamp
     private LocalDate createdAt;
 
-    @ManyToOne
-    @JoinColumn(name="owner_id")
-    private User owner;
 
-    //For JPA
-    public NoteBook() {
+    public Note(){ // for JPA
+
     }
 
-    public NoteBook(String title,User owner) {
+    public Note(String title,String content,NoteBook noteBook){ 
+
         this.title=title;
-        this.owner=owner;
+        this.content=content;
+        this.noteBook=noteBook;
     }
+
 
 
     Long getId(){
         return this.id;
     }
-    
-    Long getOwnerId(){
-        return this.ownerId;
-    }
-    
+
 
 }
