@@ -12,8 +12,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 
@@ -34,13 +34,13 @@ public class SharedNote {
     @ElementCollection
     private List<Long> allowedNotes;  // ids of notes recipient is allowed to access
 
-    @OneToOne
+    @ManyToOne
     @MapsId("noteBookId")
     @JoinColumn(name="note_book_id")
     NoteBook noteBook;
 
 
-    @OneToOne
+    @ManyToOne
     @MapsId("recipientId")
     @JoinColumn(name="recipient_id")
     User recipient;
