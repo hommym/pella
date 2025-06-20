@@ -27,7 +27,13 @@ public class EventComplete {
     @CreationTimestamp
     private LocalDate completionDate;
 
-    public EventComplete(Event event){ //jpa
+
+
+    public EventComplete(){// jpa
+
+    }
+
+    public EventComplete(Event event){ 
         this.event=event;
     }
 
