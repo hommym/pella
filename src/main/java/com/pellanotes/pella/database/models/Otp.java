@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -11,15 +12,16 @@ import jakarta.persistence.Table;
 @Table(name="otp")
 public class Otp {
     @Id
-    @Column(name="user_id",insertable=false,updatable=false)
+    @Column(name="user_id")
     private  Long userId;
 
 
     @Column(nullable=false)
-    int code;
+    private int code;
 
 
     @OneToOne
+    @MapsId
     @JoinColumn(name="user_id")
     User user;
 
@@ -39,8 +41,13 @@ public class Otp {
         return min + (int)(Math.random() * ((max - min) + 1));
     }
 
-    Long getId(){
+    public Long getId(){
         return this.userId;
     }
+
+    public int getOtpCode(){
+        return code;
+    }
+
 
 }

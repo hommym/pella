@@ -1,7 +1,5 @@
 package com.pellanotes.pella.database.models;
 
-import com.pellanotes.pella.common.exceptions.ValidatorExceptions;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -45,36 +43,37 @@ public class User {
     }
 
 
-    public User(String fullName,String email,String passwd){
+    public User(String fullName,String email,String endcPasswd,String username){
         this.fullName=fullName;
-        this.email=this.isEmailValid();
-        this.password=this.isPasswdValid();
+        this.email=email;
+        this.password=endcPasswd;
+        this.userName=username;
         
     }
 
 
     // getter , setters and validator 
 
-    private String isEmailValid(){
-        if (this.email == null || !this.email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
-            throw new ValidatorExceptions("Email must be of the form username@domain.com");
-        }
-        return this.email;
-    }
+    // private String isEmailValid(){
+    //     if (this.email == null || !this.email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+    //         throw new ValidatorExceptions("Email must be of the form username@domain.com");
+    //     }
+    //     return this.email;
+    // }
 
-    private String isPasswdValid(){
+    // private String isPasswdValid(){
 
-        // Password must be at least 8 characters long, contain at least one uppercase letter,
-        // one lowercase letter, one digit, and one special character.
-        if (this.password == null || 
-            !this.password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")) {
-            // If password is not valid, throw an exception
-            throw new ValidatorExceptions("Password must be at least 8 characters long and include uppercase, lowercase, digit, and special character.");
-        }
-        return this.password;
-    }
+    //     // Password must be at least 8 characters long, contain at least one uppercase letter,
+    //     // one lowercase letter, one digit, and one special character.
+    //     if (this.password == null || 
+    //         !this.password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")) {
+    //         // If password is not valid, throw an exception
+    //         throw new ValidatorExceptions("Password must be at least 8 characters long and include uppercase, lowercase, digit, and special character.");
+    //     }
+    //     return this.password;
+    // }
 
-    Long getId(){
+    public Long getId(){
         return this.id;
     }
 
