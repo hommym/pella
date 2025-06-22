@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "User")
+@Table(name = "user")
 public class User {
     
     @Id
@@ -18,10 +18,10 @@ public class User {
     @Column(name="full_name",nullable=false)
     String fullName;
 
-    @Column(name="user_name")
-    String userName;
+    @Column(unique = true)
+    String username;
 
-    @Column(nullable=false)
+    @Column(nullable=false, unique = true)
     String email;
 
     @Column(nullable=false)
@@ -47,7 +47,7 @@ public class User {
         this.fullName=fullName;
         this.email=email;
         this.password=endcPasswd;
-        this.userName=username;
+        this.username=username;
         
     }
 
