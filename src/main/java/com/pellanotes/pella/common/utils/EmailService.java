@@ -34,12 +34,12 @@ public class EmailService {
         mailSender.send(message);
     }
 
-    public void sendOtpEmail(String email,String username,String otp){
+    public void sendOtpEmail(String email,String username,int otp){
         String body="Hi "+username+"👋\n"+
         "\n"+   
         "To complete your account verification on PellaNotes, please use the One-Time Password (OTP) below:\n"+
-         "\n"+"\n"+"\n"+
-         "🔐 Your OTP Code: " +otp +"/n" +
+         "\n"+"\n"+
+         "🔐 Your OTP Code: " +otp +"\n" +
          "📌 This code is valid for the next 10 minutes.\n"+
          "\n"+
          "If you did not request this code, please ignore this email or contact our support team immediately.\n"+
