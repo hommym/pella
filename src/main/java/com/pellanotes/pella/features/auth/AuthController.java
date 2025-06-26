@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pellanotes.pella.common.dtos.SimpleResponse;
 import com.pellanotes.pella.features.auth.dtos.SignUpDto;
-import com.pellanotes.pella.features.auth.dtos.SignUpResponse;
-
+import com.pellanotes.pella.features.auth.dtos.VerifyAccountDto;
 import jakarta.validation.Valid;
 
 
@@ -29,19 +29,24 @@ public class AuthController {
 
 
     @PostMapping("/sign-up")
-    public ResponseEntity<SignUpResponse> signUp(@RequestBody @Valid SignUpDto signUpDto) {
+    public ResponseEntity<SimpleResponse> signUp(@RequestBody @Valid SignUpDto signUpDto) {
         return ResponseEntity.ok(this.authService.signup(signUpDto));
     }
     
 
+    @PostMapping("/account/verify")
+    public ResponseEntity<SimpleResponse> verifyAccount(@RequestBody @Valid VerifyAccountDto verfDto){
+        return ResponseEntity.ok(this.authService.verifyAccount(verfDto));
+    }
+    
+
+ 
 
     
 
-    // account creation
-
-    // user name checker
-
     //account verification
+
+    //otp resend 
 
     // account login 
 
