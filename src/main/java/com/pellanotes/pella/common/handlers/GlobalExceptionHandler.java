@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.pellanotes.pella.common.dtos.ErrorResponse;
 import com.pellanotes.pella.common.exceptions.ResourceConflict;
 import com.pellanotes.pella.common.exceptions.ResourceNotFound;
+import com.pellanotes.pella.common.exceptions.UnauthorizeRequest;
 
 
 
@@ -34,6 +35,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceConflict.class)
     public ResponseEntity<ErrorResponse> resourceConflictHandler(ResourceConflict err){
         return new ResponseEntity<>(new ErrorResponse(err.getMessage(), 409),HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(UnauthorizeRequest.class)
+    public ResponseEntity<ErrorResponse> resourceConflictHandler(UnauthorizeRequest err){
+        return new ResponseEntity<>(new ErrorResponse(err.getMessage(), 401),HttpStatus.UNAUTHORIZED);
     }
    
 
