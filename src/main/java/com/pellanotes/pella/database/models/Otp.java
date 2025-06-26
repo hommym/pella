@@ -17,7 +17,7 @@ public class Otp {
 
 
     @Column(nullable=false)
-    private int code;
+    private Integer code;
 
 
     @OneToOne
@@ -46,7 +46,7 @@ public class Otp {
     }
 
     public int getOtpCode(){
-        return code;
+        return code.intValue();
     }
 
 

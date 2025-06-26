@@ -1,5 +1,6 @@
 package com.pellanotes.pella.common.utils;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,9 @@ public class EmailService {
     
 
     private final JavaMailSender mailSender;
+
+    @Value("${EMAIL_USERNAME}")
+    private String fromAdress;
 
 
     public EmailService(JavaMailSender mailSender) {
@@ -27,7 +31,7 @@ public class EmailService {
                         "\n" + //
                         "If you did not receive the OTP, please check your spam or junk folder, or click \"Resend OTP\" on the verification page.";
          SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("your_email@gmail.com");
+        message.setFrom(this.fromAdress);
         message.setTo(email);
         message.setSubject("Hey "+username+" welcome aboard! 🎉");
         message.setText(body);
@@ -50,7 +54,7 @@ public class EmailService {
          "\n"+
          "The PellaNotes Team";
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("your_email@gmail.com");
+        message.setFrom(this.fromAdress);
         message.setTo(email);
         message.setSubject(" Your One-Time Password (OTP) for Account Verification");
         message.setText(body);
