@@ -63,16 +63,19 @@ public class AuthService {
     
     @Transactional
     SimpleResponse verifyAccount(VerifyAccountDto dto){
-
-        // task
+        
         Optional<User> user= this.userRepo.getUserByEmail(dto.email);
 
         if(user.isEmpty()) throw new ResourceNotFound("No account with this "+dto.email+" exit");
+        Long userId=user.get().getId();
 
-        Optional<Integer> otpCode= this.otpRepo.getOtpCodeByUserId((user.get()).getId());
+        Optional<Integer> otpCode= this.otpRepo.getOtpCodeByUserId(userId);
 
         if(otpCode.isEmpty())throw new ResourceNotFound("No Otp code has been sent for this account");
         else if(otpCode.get().intValue()!=dto.otpCode.intValue())throw new UnauthorizeRequest("Invalid Otp, please check otp and try again");
+
+        // verifying user's account
+        userRepo.verifyUser(userId);
 
         this.otpRepo.deleteById((user.get()).getId());
 
@@ -80,5 +83,27 @@ public class AuthService {
     }
 
     
+    @Transactional
+    SimpleResponse resendOtp(String email){
+
+        Optional<User> user= this.userRepo.getUserByEmail(email);
+
+        if(user.isEmpty()) throw new ResourceNotFound("No account with this "+email+" exit");
+        Long userId=user.get().getId();
+
+        Optional<Integer> otpCode= this.otpRepo.getOtpCodeByUserId(userId);
+
+        if(otpCode.isEmpty()){
+            Otp otp = new Otp(user.get());
+            otpRepo.save(otp);
+            otpCode = Optional.of(otp.getOtpCode());
+        }
+
+        //send otp to user
+        emailService.sendOtpEmail(email, (user.get()).getUsername(), otpCode.get());
+    
+        return new SimpleResponse("New Otp Code Sent"); 
+    }
+
 
 }
