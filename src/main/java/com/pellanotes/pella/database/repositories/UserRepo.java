@@ -3,6 +3,7 @@ package com.pellanotes.pella.database.repositories;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -20,6 +21,10 @@ public interface  UserRepo extends JpaRepository<User, Long> {
 
     @Query(value ="SELECT * FROM user WHERE email=:eAddress", nativeQuery=true)
     Optional<User> getUserByEmail(@Param("eAddress") String email);
+
+    @Modifying
+    @Query(value ="UPDATE user SET is_verfied=true WHERE id=:userId", nativeQuery=true)
+    void verifyUser(@Param("userId") Long userId);
 
 
 }
