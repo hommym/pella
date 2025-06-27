@@ -32,7 +32,7 @@ public class Otp {
 
     public Otp(User user){
         this.user=user;
-        this.code=this.generateCode(6);
+        this.code=this.generateCode(4);
     }  
 
     private int generateCode(int numOfDigits){

@@ -77,5 +77,8 @@ public class User {
         return this.id;
     }
 
+    public String getUsername(){
+        return this.username;
+    }
   
 }
