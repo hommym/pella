@@ -8,8 +8,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pellanotes.pella.common.dtos.SimpleResponse;
+import com.pellanotes.pella.features.auth.dtos.LoginDto;
+import com.pellanotes.pella.features.auth.dtos.LoginResponse;
 import com.pellanotes.pella.features.auth.dtos.SignUpDto;
 import com.pellanotes.pella.features.auth.dtos.VerifyAccountDto;
+
 import jakarta.validation.Valid;
 
 
@@ -48,6 +51,11 @@ public class AuthController {
     
  
 
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginDto loginDto) {
+        return ResponseEntity.ok(this.authService.login(loginDto));
+    }
+    
     
 
     //account verification

@@ -9,14 +9,16 @@ import com.pellanotes.pella.common.exceptions.ResourceConflict;
 import com.pellanotes.pella.common.exceptions.ResourceNotFound;
 import com.pellanotes.pella.common.exceptions.UnauthorizeRequest;
 import com.pellanotes.pella.common.utils.EmailService;
+import com.pellanotes.pella.common.utils.JwtService;
 import com.pellanotes.pella.common.utils.PasswordService;
 import com.pellanotes.pella.database.models.Otp;
 import com.pellanotes.pella.database.models.User;
 import com.pellanotes.pella.database.repositories.OtpRepo;
 import com.pellanotes.pella.database.repositories.UserRepo;
+import com.pellanotes.pella.features.auth.dtos.LoginDto;
+import com.pellanotes.pella.features.auth.dtos.LoginResponse;
 import com.pellanotes.pella.features.auth.dtos.SignUpDto;
 import com.pellanotes.pella.features.auth.dtos.VerifyAccountDto;
-
 
 import jakarta.transaction.Transactional;
 
@@ -29,13 +31,16 @@ public class AuthService {
     private final OtpRepo otpRepo;
     private final PasswordService passwdService;
     private final EmailService   emailService;
+    private final JwtService  jwtService;
 
-
-    public AuthService(UserRepo userRepo,OtpRepo otpRepo,PasswordService passwdService,EmailService   emailService){
+    public AuthService(UserRepo userRepo,OtpRepo otpRepo,PasswordService passwdService,EmailService emailService,
+    JwtService jwtService
+    ){
         this.userRepo=userRepo;
         this.otpRepo=otpRepo;
         this.passwdService=passwdService;
         this.emailService=emailService;
+        this.jwtService=jwtService;
     }
 
     @Transactional
@@ -105,5 +110,27 @@ public class AuthService {
         return new SimpleResponse("New Otp Code Sent"); 
     }
 
+
+    @Transactional
+    LoginResponse login(LoginDto dto){
+
+        Optional<User> user= this.userRepo.getUserByEmail(dto.email);
+        if(user.isEmpty()) throw new ResourceNotFound("No account with this "+dto.email+" exit");
+        String hashedPassword= (user.get()).getPassword();
+        String username=(user.get()).getUsername();
+        String profile=(user.get()).profile;
+        boolean twoFAStatus=(user.get()).check2FaStatus();
+
+
+
+        if(!this.passwdService.matchPasswd(dto.password, hashedPassword))throw new UnauthorizeRequest("Password Invalid");
+        else if(!(user.get()).checkVerfStatus())throw new UnauthorizeRequest("Please verify account with otp to login");
+
+
+        // creating jwt token with email
+        String authToken= twoFAStatus?null:this.jwtService.getToken(dto.email);
+        
+        return new LoginResponse(dto.email,profile,username,authToken,twoFAStatus);  
+    }
 
 }
