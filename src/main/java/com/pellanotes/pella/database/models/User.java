@@ -27,7 +27,7 @@ public class User {
     @Column(nullable=false)
     String password;
 
-    String profile;
+    public String profile;
 
     @Column(name="is_verfied",nullable=false)
     private  boolean isVerified=false;
@@ -80,5 +80,18 @@ public class User {
     public String getUsername(){
         return this.username;
     }
+
+    public String getPassword(){
+        return this.password;
+    }
+
+    public boolean checkVerfStatus(){
+        return this.isVerified;
+    }
+
+    public boolean check2FaStatus(){
+        return this.is2FAOn;
+    }
+
   
 }
