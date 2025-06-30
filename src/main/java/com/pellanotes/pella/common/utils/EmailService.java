@@ -31,7 +31,7 @@ public class EmailService {
                         "\n" + //
                         "If you did not receive the OTP, please check your spam or junk folder, or click \"Resend OTP\" on the verification page.";
          SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(this.fromAdress);
+        message.setFrom(this.fromAdress+"@mailtrap.io");
         message.setTo(email);
         message.setSubject("Hey "+username+" welcome aboard! 🎉");
         message.setText(body);
@@ -54,7 +54,7 @@ public class EmailService {
          "\n"+
          "The PellaNotes Team";
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(this.fromAdress);
+        message.setFrom(this.fromAdress+"@mailtrap.io");
         message.setTo(email);
         message.setSubject(" Your One-Time Password (OTP) for Account Verification");
         message.setText(body);
