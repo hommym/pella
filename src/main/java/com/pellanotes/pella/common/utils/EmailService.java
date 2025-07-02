@@ -38,8 +38,24 @@ public class EmailService {
         mailSender.send(message);
     }
 
-    public void sendOtpEmail(String email,String username,int otp){
-        String body="Hi "+username+"👋\n"+
+    public void sendOtpEmail(String email,String username,int otp,boolean isResetEmail){
+        String body;
+
+        if(isResetEmail)body="Hi "+username+"👋\n"+
+        "\n"+   
+        "To complete your Account Reset on PellaNotes, please use the One-Time Password (OTP) below:\n"+
+         "\n"+"\n"+
+         "🔐 Your OTP Code: " +otp +"\n" +
+         "📌 This code is valid for the next 10 minutes.\n"+
+         "\n"+
+         "If you did not request this code, please ignore this email or contact our support team immediately.\n"+
+         "\n"+
+         "Thank you for choosing PellaNotes. Let us get started on your journey!\n"+
+         "\n"+
+         "Best regards,\n"+
+         "\n"+
+         "The PellaNotes Team";
+        else body="Hi "+username+"👋\n"+
         "\n"+   
         "To complete your account verification on PellaNotes, please use the One-Time Password (OTP) below:\n"+
          "\n"+"\n"+
@@ -53,14 +69,18 @@ public class EmailService {
          "Best regards,\n"+
          "\n"+
          "The PellaNotes Team";
+
+        String subject=isResetEmail?"Your One-Time Password (OTP) for Account Reset":"Your One-Time Password (OTP) for " +"Account Verification"; 
+
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(this.fromAdress+"@mailtrap.io");
         message.setTo(email);
-        message.setSubject(" Your One-Time Password (OTP) for Account Verification");
+        message.setSubject(subject);
         message.setText(body);
         mailSender.send(message);
 
     }
 
+   
 
 }
