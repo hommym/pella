@@ -26,5 +26,9 @@ public interface  UserRepo extends JpaRepository<User, Long> {
     @Query(value ="UPDATE user SET is_verfied=true WHERE id=:userId", nativeQuery=true)
     void verifyUser(@Param("userId") Long userId);
 
+    @Modifying
+    @Query(value ="UPDATE user SET password=:passwd WHERE id=:userId", nativeQuery=true)
+    void updatePassword(@Param("userId") Long userId, @Param("passwd") String passwd);
+
 
 }
