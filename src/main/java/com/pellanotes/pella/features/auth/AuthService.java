@@ -17,6 +17,7 @@ import com.pellanotes.pella.database.repositories.OtpRepo;
 import com.pellanotes.pella.database.repositories.UserRepo;
 import com.pellanotes.pella.features.auth.dtos.LoginDto;
 import com.pellanotes.pella.features.auth.dtos.LoginResponse;
+import com.pellanotes.pella.features.auth.dtos.PasswordResetDto;
 import com.pellanotes.pella.features.auth.dtos.SignUpDto;
 import com.pellanotes.pella.features.auth.dtos.VerifyAccountDto;
 
@@ -44,6 +45,24 @@ public class AuthService {
     }
 
     @Transactional
+    private  User isAccountValid(String email){
+        Optional<User> user= this.userRepo.getUserByEmail(email);
+        if(user.isEmpty()) throw new ResourceNotFound("No account with this "+email+" exit");
+        return user.get();
+    }
+
+
+    @Transactional
+    private void verifyOtp(Long userId ,Integer otp){
+        Optional<Integer> otpCode= this.otpRepo.getOtpCodeByUserId(userId);
+
+        if(otpCode.isEmpty())throw new ResourceNotFound("No Otp code has been sent for this account");
+        else if(otpCode.get().intValue()!=otp.intValue())throw new UnauthorizeRequest("Invalid Otp, please check otp and try again");
+
+        this.otpRepo.deleteById(userId);
+    }
+
+    @Transactional
     SimpleResponse signup(SignUpDto dto){
 
         // check if email and username exist
@@ -60,7 +79,7 @@ public class AuthService {
         emailService.sendSignUpEmail(dto.email, dto.username);
 
         //send otp to user
-        emailService.sendOtpEmail(dto.email, dto.username, otp.getOtpCode());
+        emailService.sendOtpEmail(dto.email, dto.username, otp.getOtpCode(),false);
 
         return new SimpleResponse("Account creation successful, verify account to login");
     }
@@ -69,20 +88,13 @@ public class AuthService {
     @Transactional
     SimpleResponse verifyAccount(VerifyAccountDto dto){
         
-        Optional<User> user= this.userRepo.getUserByEmail(dto.email);
+        User user= this.isAccountValid(dto.email);
+        Long userId=user.getId();
 
-        if(user.isEmpty()) throw new ResourceNotFound("No account with this "+dto.email+" exit");
-        Long userId=user.get().getId();
-
-        Optional<Integer> otpCode= this.otpRepo.getOtpCodeByUserId(userId);
-
-        if(otpCode.isEmpty())throw new ResourceNotFound("No Otp code has been sent for this account");
-        else if(otpCode.get().intValue()!=dto.otpCode.intValue())throw new UnauthorizeRequest("Invalid Otp, please check otp and try again");
+        this.verifyOtp(userId, dto.otpCode);
 
         // verifying user's account
         userRepo.verifyUser(userId);
-
-        this.otpRepo.deleteById((user.get()).getId());
 
         return new SimpleResponse("Account verified successfully");
     }
@@ -91,22 +103,16 @@ public class AuthService {
     @Transactional
     SimpleResponse resendOtp(String email){
 
-        Optional<User> user= this.userRepo.getUserByEmail(email);
-
-        if(user.isEmpty()) throw new ResourceNotFound("No account with this "+email+" exit");
-        Long userId=user.get().getId();
-
-        Optional<Integer> otpCode= this.otpRepo.getOtpCodeByUserId(userId);
+        User user= this.isAccountValid(email);
+        Optional<Integer> otpCode= this.otpRepo.getOtpCodeByUserId(user.getId());
 
         if(otpCode.isEmpty()){
-            Otp otp = new Otp(user.get());
+            Otp otp = new Otp(user);
             otpRepo.save(otp);
             otpCode = Optional.of(otp.getOtpCode());
         }
-
         //send otp to user
-        emailService.sendOtpEmail(email, (user.get()).getUsername(), otpCode.get());
-    
+        emailService.sendOtpEmail(email, user.getUsername(), otpCode.get(),false);
         return new SimpleResponse("New Otp Code Sent"); 
     }
 
@@ -114,23 +120,47 @@ public class AuthService {
     @Transactional
     LoginResponse login(LoginDto dto){
 
-        Optional<User> user= this.userRepo.getUserByEmail(dto.email);
-        if(user.isEmpty()) throw new ResourceNotFound("No account with this "+dto.email+" exit");
-        String hashedPassword= (user.get()).getPassword();
-        String username=(user.get()).getUsername();
-        String profile=(user.get()).profile;
-        boolean twoFAStatus=(user.get()).check2FaStatus();
-
-
+        User user= this.isAccountValid(dto.email);
+        String hashedPassword= user.getPassword();
+        String username=user.getUsername();
+        String profile=user.profile;
+        boolean twoFAStatus=user.check2FaStatus();
 
         if(!this.passwdService.matchPasswd(dto.password, hashedPassword))throw new UnauthorizeRequest("Password Invalid");
-        else if(!(user.get()).checkVerfStatus())throw new UnauthorizeRequest("Please verify account with otp to login");
-
+        else if(!user.checkVerfStatus())throw new UnauthorizeRequest("Please verify account with otp to login");
 
         // creating jwt token with email
         String authToken= twoFAStatus?null:this.jwtService.getToken(dto.email);
         
         return new LoginResponse(dto.email,profile,username,authToken,twoFAStatus);  
+    }
+
+
+    @Transactional
+    SimpleResponse accountReset(String email){
+     User user= this.isAccountValid(email);
+     String username= user.getUsername();    
+
+     // set up otp 
+     Otp otp= new Otp(user);
+     otp= otpRepo.save(otp);
+     
+     this.emailService.sendOtpEmail(email, username, otp.getOtpCode(),true );
+     return new SimpleResponse("Reset Otp has been sent ");
+    }
+
+
+    @Transactional
+    SimpleResponse passwordReset(PasswordResetDto dto){
+
+        User user= this.isAccountValid(dto.email);
+        this.verifyOtp(user.getId(), dto.otpCode);
+
+        // changing password 
+        String hashedP= this.passwdService.encryptPasswd(dto.newPassword);
+        this.userRepo.updatePassword(user.getId(),hashedP );
+
+        return new SimpleResponse("Password has been reset successfully");   
     }
 
 }

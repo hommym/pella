@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pellanotes.pella.common.dtos.SimpleResponse;
 import com.pellanotes.pella.features.auth.dtos.LoginDto;
 import com.pellanotes.pella.features.auth.dtos.LoginResponse;
+import com.pellanotes.pella.features.auth.dtos.PasswordResetDto;
 import com.pellanotes.pella.features.auth.dtos.SignUpDto;
 import com.pellanotes.pella.features.auth.dtos.VerifyAccountDto;
 
@@ -45,7 +46,7 @@ public class AuthController {
     
 
     @PostMapping("/resend-otp/{email}")
-    public ResponseEntity<SimpleResponse> postMethodName(@PathVariable(name = "email") String email) {
+    public ResponseEntity<SimpleResponse> resendOtp(@PathVariable(name = "email") String email) {
         return ResponseEntity.ok(this.authService.resendOtp(email));
     }
     
@@ -58,14 +59,22 @@ public class AuthController {
     
     
 
-    //account verification
+    @PostMapping("/account-reset/{email}")
+    public ResponseEntity<SimpleResponse> accountReset(@PathVariable(name = "email") String email) {
+        return ResponseEntity.ok(this.authService.accountReset(email));
+    }
+  
 
-    //otp resend 
 
-    // account login 
+    @PostMapping("/password-reset")
+    public ResponseEntity<SimpleResponse> postMethodName(@RequestBody @Valid PasswordResetDto passwdDto) {
+        return ResponseEntity.ok(this.authService.passwordReset(passwdDto));
+    }
 
-    // account reset
+    
 
+
+    //  account related stuff
     // password change
     
     //email change
@@ -75,9 +84,6 @@ public class AuthController {
     //profile pic updates
 
     
-
-
-
 
 
 }
