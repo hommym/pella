@@ -74,14 +74,6 @@ public class AuthController {
     
 
 
-    //  account related stuff
-    // password change
-    
-    //email change
-
-    // account update (ie name ,username,)
-
-    //profile pic updates
 
     
 
