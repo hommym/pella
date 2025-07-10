@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.pellanotes.pella.common.dtos.ErrorResponse;
+import com.pellanotes.pella.common.exceptions.ForbiddenRequest;
 import com.pellanotes.pella.common.exceptions.ResourceConflict;
 import com.pellanotes.pella.common.exceptions.ResourceNotFound;
 import com.pellanotes.pella.common.exceptions.UnauthorizeRequest;
@@ -24,6 +25,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new ErrorResponse(errMessage, 400),HttpStatus.BAD_REQUEST);
     }
 
+
+
+
+    @ExceptionHandler(ForbiddenRequest.class)
+    public ResponseEntity<ErrorResponse> forbiddenRequestHandler(ResourceNotFound err){
+        return new ResponseEntity<>(new ErrorResponse(err.getMessage(), 403),HttpStatus.FORBIDDEN);
+    }
 
 
     @ExceptionHandler(ResourceNotFound.class)
@@ -46,6 +54,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> serverErrorHandler(RuntimeException err){
-        return new ResponseEntity<>(new ErrorResponse(err.getMessage(), 500),HttpStatus.INTERNAL_SERVER_ERROR);
+        System.out.println(err);
+        return new ResponseEntity<>(new ErrorResponse("Server Error", 500),HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
