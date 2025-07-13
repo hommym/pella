@@ -62,6 +62,8 @@ public class AuthFilter implements  Filter {
                 //extract email and add it to the request(N/A)
                 String userEmail=this.jwtService.extractEmail(actualToken);
                 Optional<User> user= this.userRepo.getUserByEmail(userEmail);
+
+                if(user.isEmpty())throw new UnauthorizeRequest("Invalid Auth token"); 
                 
                 req.setAttribute("user", user.get());
                 chain.doFilter(request, response);
