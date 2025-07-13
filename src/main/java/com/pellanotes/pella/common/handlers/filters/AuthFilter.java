@@ -1,6 +1,5 @@
 package com.pellanotes.pella.common.handlers.filters;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import org.springframework.web.servlet.HandlerExceptionResolver;
@@ -12,7 +11,6 @@ import com.pellanotes.pella.database.repositories.UserRepo;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,7 +41,7 @@ public class AuthFilter implements  Filter {
     @Override
     @Transactional
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
+           {
                
                 HttpServletRequest req = (HttpServletRequest) request;
                 HttpServletResponse res= ( HttpServletResponse) response;
@@ -59,7 +57,7 @@ public class AuthFilter implements  Filter {
                 String[] parts = token.split("Bearer\\s+");
                 String actualToken = parts.length > 1 ? parts[1] : "";
 
-                if(!this.jwtService.isTokenValid(actualToken))throw new UnauthorizeRequest("Invalid Auth token");
+                this.jwtService.isTokenValid(actualToken);
 
                 //extract email and add it to the request(N/A)
                 String userEmail=this.jwtService.extractEmail(actualToken);

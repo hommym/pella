@@ -9,6 +9,8 @@ import com.pellanotes.pella.database.models.User;
 import com.pellanotes.pella.database.repositories.UserRepo;
 import com.pellanotes.pella.features.account.dtos.ChangePasswdDto;
 
+import jakarta.transaction.Transactional;
+
 
 
 @Service
@@ -27,6 +29,7 @@ public class AccountService {
 
 
 
+    @Transactional
     public SimpleResponse changePassword(ChangePasswdDto dto,User user) {
 
         boolean isOldPasswdValid= this.passwdService.matchPasswd(dto.oldPasswd, user.getPassword());
