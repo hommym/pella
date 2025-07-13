@@ -50,7 +50,7 @@ public class JwtService {
     }
 
     public void isTokenValid(String token){
-        Date expiration;
+       Date expiration;
        try {
          expiration= Jwts.parser()
         .verifyWith(this.getSigingKey())
