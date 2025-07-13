@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UnauthorizeRequest.class)
-    public ResponseEntity<ErrorResponse> resourceConflictHandler(UnauthorizeRequest err){
+    public ResponseEntity<ErrorResponse> unauthorizeRequestHandler(UnauthorizeRequest err){
         return new ResponseEntity<>(new ErrorResponse(err.getMessage(), 401),HttpStatus.UNAUTHORIZED);
     }
    
