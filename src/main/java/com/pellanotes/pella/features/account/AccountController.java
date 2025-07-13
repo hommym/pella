@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pellanotes.pella.common.dtos.SimpleResponse;
 import com.pellanotes.pella.database.models.User;
 import com.pellanotes.pella.features.account.dtos.ChangePasswdDto;
+import com.pellanotes.pella.features.account.dtos.UpdateAccountInfoDto;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -41,10 +42,12 @@ public class AccountController {
     }
 
 
-    //  account related stuff
-    // password change
+    @PatchMapping
+    public ResponseEntity<SimpleResponse> updateAccountInfo(@RequestBody @Valid UpdateAccountInfoDto updateAccountDto,HttpServletRequest req){
+        return ResponseEntity.ok(this.accountService.updateAccountInfo(updateAccountDto, (User)req.getAttribute("user")));
+    }
     
-    //email change
+    
 
     // account update (ie name ,username,profile)
 
