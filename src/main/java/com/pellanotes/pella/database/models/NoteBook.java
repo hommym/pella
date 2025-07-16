@@ -13,26 +13,27 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 
 @Entity
-@Table(name="note_book")
+@Table(name="note_book",uniqueConstraints={@UniqueConstraint(columnNames={"owner_id","title"})})
 public class NoteBook {
  
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  Long id;
 
+    @Column(nullable=false)
+    private String title;
 
-    String title;
-
-    @Column(name="owner_id",insertable=false,updatable=false)
+    @Column(name="owner_id",nullable=false,insertable=false,updatable=false)
     private Long ownerId;
 
 
     private boolean isDefault=false;
 
-    @Column(name="created_at")
+    @Column(name="created_at",nullable=false)
     @CreationTimestamp
     private LocalDate createdAt;
 
@@ -55,12 +56,24 @@ public class NoteBook {
         this.isDefault=isDefault;
     }
 
-    Long getId(){
+   public  Long getId(){
         return this.id;
     }
     
-    Long getOwnerId(){
+   public Long getOwnerId(){
         return this.ownerId;
+    }
+
+    public LocalDate getCreationDate(){
+        return this.createdAt;
+    }
+
+    public String getTitle(){
+        return this.title;
+    }
+
+    public void updateTitle(String title){
+        this.title=title;
     }
     
 
