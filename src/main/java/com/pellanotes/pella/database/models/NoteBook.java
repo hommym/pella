@@ -49,6 +49,11 @@ public class NoteBook {
         this.owner=owner;
     }
 
+    public NoteBook(String title,User owner,boolean isDefault) {
+        this.title=title;
+        this.owner=owner;
+        this.isDefault=isDefault;
+    }
 
     Long getId(){
         return this.id;
