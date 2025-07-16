@@ -14,6 +14,7 @@ import com.pellanotes.pella.features.auth.dtos.PasswordResetDto;
 import com.pellanotes.pella.features.auth.dtos.SignUpDto;
 import com.pellanotes.pella.features.auth.dtos.VerifyAccountDto;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 
@@ -40,8 +41,8 @@ public class AuthController {
     
 
     @PostMapping("/account/verify")
-    public ResponseEntity<SimpleResponse> verifyAccount(@RequestBody @Valid VerifyAccountDto verfDto){
-        return ResponseEntity.ok(this.authService.verifyAccount(verfDto));
+    public ResponseEntity<SimpleResponse> verifyAccount(@RequestBody @Valid VerifyAccountDto verfDto,HttpServletRequest req){
+        return ResponseEntity.ok(this.authService.verifyAccount(verfDto,req));
     }
     
 

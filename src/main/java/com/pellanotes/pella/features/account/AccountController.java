@@ -49,10 +49,5 @@ public class AccountController {
     
     
 
-    // account update (ie name ,username,profile)
-
-    
-
-
 
 }

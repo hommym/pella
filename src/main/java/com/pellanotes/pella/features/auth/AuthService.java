@@ -21,6 +21,7 @@ import com.pellanotes.pella.features.auth.dtos.PasswordResetDto;
 import com.pellanotes.pella.features.auth.dtos.SignUpDto;
 import com.pellanotes.pella.features.auth.dtos.VerifyAccountDto;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -86,15 +87,19 @@ public class AuthService {
 
     
     @Transactional
-    SimpleResponse verifyAccount(VerifyAccountDto dto){
+    SimpleResponse verifyAccount(VerifyAccountDto dto,HttpServletRequest req){
         
         User user= this.isAccountValid(dto.email);
         Long userId=user.getId();
 
+        if(user.checkVerfStatus())throw new ResourceConflict("Account has already been verified");
         this.verifyOtp(userId, dto.otpCode);
 
         // verifying user's account
         userRepo.verifyUser(userId);
+
+        // adding user's account to the request object for post request processes
+        req.setAttribute("user", user);
 
         return new SimpleResponse("Account verified successfully");
     }
