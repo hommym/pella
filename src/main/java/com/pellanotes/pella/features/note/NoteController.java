@@ -1,19 +1,25 @@
 package com.pellanotes.pella.features.note;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.pellanotes.pella.database.models.User;
+import com.pellanotes.pella.features.note.dtos.CreateNoteDto;
 import com.pellanotes.pella.features.note.dtos.NoteBookDto;
 import com.pellanotes.pella.features.note.dtos.NoteBookResponse;
+import com.pellanotes.pella.features.note.dtos.NoteResponse;
 import com.pellanotes.pella.features.note.dtos.RenameNoteBookDto;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+
 
 
 @RestController
@@ -41,7 +47,17 @@ public class NoteController {
         return ResponseEntity.ok(this.noteService.renameNoteBook(createDto, (User) req.getAttribute("user")));
     }
     
+    @GetMapping("/books")
+    public  ResponseEntity<List<NoteBookResponse>> getAllNoteBooks(HttpServletRequest req) {
+        return ResponseEntity.ok(this.noteService.getAllNoteBooks((User) req.getAttribute("user")));
+    }
+    
 
+    @PostMapping
+    public ResponseEntity<NoteResponse> createNote(@RequestBody @Valid CreateNoteDto createNoteDto) {
+        return ResponseEntity.ok(this.noteService.createNote(createNoteDto));
+    }
+    
 
     //crud for note
 
