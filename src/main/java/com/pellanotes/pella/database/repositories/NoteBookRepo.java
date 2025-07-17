@@ -1,5 +1,6 @@
 package com.pellanotes.pella.database.repositories;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,6 +21,11 @@ Optional<NoteBook> getDefaultNoteBook(@Param("userId") Long userId);
 
 @Query(value = "SELECT * FROM note_book WHERE owner_id=:userId AND title=:title",nativeQuery =true)    
 Optional<NoteBook> getNoteBook(@Param("userId") Long userId,@Param("title") String title);   
+
+
+@Query(value = "SELECT * FROM note_book WHERE owner_id=:userId",nativeQuery =true)    
+List<NoteBook> getAllNoteBooks(@Param("userId") Long userId);   // get all notebooks for a particular user
+
 
 @Modifying
 @Query(value = "UPDATE note_book SET title=:newTitle WHERE owner_id=:userId AND title=:oldTitle",nativeQuery =true)    
