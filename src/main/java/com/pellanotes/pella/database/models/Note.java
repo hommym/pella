@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -32,7 +33,7 @@ public class Note {
     @Column(name="note_book_id",insertable=false,updatable=false)
     private Long noteBookId;
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="note_book_id")
     NoteBook noteBook;
 
@@ -50,6 +51,7 @@ public class Note {
         this.title=title;
         this.content=content;
         this.noteBook=noteBook;
+        this.noteBookId=noteBook.getId();
     }
 
 

@@ -13,7 +13,7 @@ import com.pellanotes.pella.database.models.Note;
 public interface NoteRepo extends JpaRepository<Note, Long> {
     
 
-    @Query(value = "SELECT * FROM note WHERE note_book_id=:noteBookid AND title=:noteTitle",nativeQuery =true)    
+    @Query(value = "SELECT * FROM note WHERE note_book_id=:noteBookId AND title=:noteTitle",nativeQuery =true)    
     Optional<Note> getNote(@Param("noteBookId") Long noteBookId,@Param("noteTitle") String noteTitle); 
 
 
@@ -23,7 +23,7 @@ public interface NoteRepo extends JpaRepository<Note, Long> {
 
 
     @Modifying
-    @Query(value = "UPDATE note_book SET content=:updatedContent WHERE id=:noteId",nativeQuery =true)    
+    @Query(value = "UPDATE note SET content=:updatedContent WHERE id=:noteId",nativeQuery =true)    
     void updateNoteContent(@Param("noteId") Long noteId,@Param("updatedContent") String updatedContent); 
 
 }
