@@ -43,8 +43,9 @@ public class NoteService {
     private NoteBook checkNoteBook(Long userId,String title, boolean throwErrIfPresent){
         Optional<NoteBook> book= this.noteBookRepo.getNoteBook(userId, title);
         if(book.isPresent() && throwErrIfPresent)throw new ResourceConflict("NoteBook with this tite:"+title+" exist for this account");
-        else if(book.isEmpty()) throw new ResourceNotFound("No NoteBook with this title exist");
+        else if(book.isEmpty() && !throwErrIfPresent) throw new ResourceNotFound("No NoteBook with this title exist");
 
+        if(throwErrIfPresent) return null;
         return book.get();
     }
 
@@ -57,16 +58,17 @@ public class NoteService {
         Optional<Note> note= this.noteRepo.getNote(noteBookId, noteTitle);
 
         if(note.isPresent() && throwErrIfPresent)throw new ResourceConflict("Note with this tite:"+noteTitle+" exist for this notebook");
-        else if(note.isEmpty()) throw new ResourceNotFound("No Note with this title exist");
+        else if(note.isEmpty()&& !throwErrIfPresent) throw new ResourceNotFound("No Note with this title exist");
 
-        return new Object[]{book.get(),note.get()};
+        return new Object[]{book.get(),throwErrIfPresent?null:note.get()};
     }
     
     @Transactional
     public NoteBookResponse createNoteBook(NoteBookDto dto,User user){
         this.checkNoteBook(user.getId(), dto.title,true);
         NoteBook book= new NoteBook(dto.title, user);
-        this.noteBookRepo.save(book);
+        book=this.noteBookRepo.save(book);
+        System.out.println("After"+book.getNotes()); // this is still null instead of empty
         return new NoteBookResponse(book);
     }
 
@@ -112,7 +114,7 @@ public class NoteService {
         Object [] noteAndNoteBook= this.checkNoteInNoteBook(dto.noteBookId, dto.title, true);
 
         Note note= new Note(dto.title,dto.content,(NoteBook) noteAndNoteBook[0]);
-        this.noteRepo.save(note);
+        note=this.noteRepo.save(note);
 
         return new NoteResponse(note);
     }

@@ -16,6 +16,8 @@ import com.pellanotes.pella.features.note.dtos.NoteBookDto;
 import com.pellanotes.pella.features.note.dtos.NoteBookResponse;
 import com.pellanotes.pella.features.note.dtos.NoteResponse;
 import com.pellanotes.pella.features.note.dtos.RenameNoteBookDto;
+import com.pellanotes.pella.features.note.dtos.RenameNoteDto;
+import com.pellanotes.pella.features.note.dtos.UpdateNoteDto;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -35,7 +37,7 @@ public class NoteController {
     }
 
 
-    //crud for notebooks
+    
 
     @PostMapping("/book")
     public ResponseEntity<NoteBookResponse> createNoteBook(@RequestBody @Valid NoteBookDto createDto,HttpServletRequest req) {
@@ -57,8 +59,22 @@ public class NoteController {
     public ResponseEntity<NoteResponse> createNote(@RequestBody @Valid CreateNoteDto createNoteDto) {
         return ResponseEntity.ok(this.noteService.createNote(createNoteDto));
     }
+
+
+
+    @PatchMapping
+    public ResponseEntity<NoteResponse> updateNoteContent(@RequestBody @Valid UpdateNoteDto updateNoteDto){
+        return ResponseEntity.ok(this.noteService.updateNote(updateNoteDto));
+    }
+
+    @PatchMapping("/rename")
+    public ResponseEntity<NoteResponse> renameNote(@RequestBody @Valid RenameNoteDto renameNoteDto){
+        return ResponseEntity.ok(this.noteService.renameNote(renameNoteDto));
+    }
+
+    // add endpoints for adding and managing note references 
     
 
-    //crud for note
+  
 
 }
