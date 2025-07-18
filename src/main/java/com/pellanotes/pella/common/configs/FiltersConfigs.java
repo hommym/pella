@@ -32,6 +32,7 @@ public class FiltersConfigs {
 
         registrationBean.setFilter(new AuthFilter(this.jwt,this.handlerExceptionResolver,this.userRepo));
         registrationBean.addUrlPatterns("/api/v1/account/*"); 
+        registrationBean.addUrlPatterns("/api/v1/notes/*");
         // more urls can be added
         registrationBean.setOrder(1);
         return registrationBean;
