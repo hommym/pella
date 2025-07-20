@@ -11,13 +11,18 @@ import com.pellanotes.pella.common.exceptions.ResourceConflict;
 import com.pellanotes.pella.common.exceptions.ResourceNotFound;
 import com.pellanotes.pella.database.models.Note;
 import com.pellanotes.pella.database.models.NoteBook;
+import com.pellanotes.pella.database.models.NoteReference;
 import com.pellanotes.pella.database.models.User;
 import com.pellanotes.pella.database.repositories.NoteBookRepo;
+import com.pellanotes.pella.database.repositories.NoteReferenceRepo;
 import com.pellanotes.pella.database.repositories.NoteRepo;
+import com.pellanotes.pella.features.note.dtos.AddNoteRefDto;
 import com.pellanotes.pella.features.note.dtos.CreateNoteDto;
 import com.pellanotes.pella.features.note.dtos.NoteBookDto;
 import com.pellanotes.pella.features.note.dtos.NoteBookResponse;
+import com.pellanotes.pella.features.note.dtos.NoteRefResponse;
 import com.pellanotes.pella.features.note.dtos.NoteResponse;
+import com.pellanotes.pella.features.note.dtos.RemoveNoteRefDto;
 import com.pellanotes.pella.features.note.dtos.RenameNoteBookDto;
 import com.pellanotes.pella.features.note.dtos.RenameNoteDto;
 import com.pellanotes.pella.features.note.dtos.UpdateNoteDto;
@@ -31,11 +36,12 @@ public class NoteService {
   
     private final NoteBookRepo noteBookRepo;
     private final NoteRepo noteRepo;
+    private final NoteReferenceRepo noteRefRepo;
 
-
-    public NoteService(NoteBookRepo noteBookRepo, NoteRepo noteRepo){
+    public NoteService(NoteBookRepo noteBookRepo, NoteRepo noteRepo,NoteReferenceRepo noteRefRepo){
         this.noteBookRepo=noteBookRepo;
         this.noteRepo=noteRepo;
+        this.noteRefRepo=noteRefRepo;
     }
 
 
@@ -145,6 +151,27 @@ public class NoteService {
         (note.get()).setContent(dto.updatedContent);
         
         return new NoteResponse(note.get());
+    }
+
+    @Transactional
+    public NoteRefResponse addNoteReference(AddNoteRefDto dto){
+        Optional<Note> note= this.noteRepo.findById(dto.noteId);
+        if(note.isEmpty())throw new ResourceNotFound("No Note with this id exist");
+
+        NoteReference ref= new NoteReference(note.get(),dto.refMaterial,dto.fileType,dto.reference);
+        ref=this.noteRefRepo.save(ref);
+
+        return new NoteRefResponse(ref);
+    }
+
+    @Transactional
+    public SimpleResponse removeNoteReference(RemoveNoteRefDto dto){
+        Optional<NoteReference> ref= this.noteRefRepo.findById(dto.refId);
+
+        if(ref.isEmpty())throw new ResourceNotFound("No note reference with this id exist");
+        this.noteRefRepo.deleteById(dto.refId);
+        
+        return new SimpleResponse("Note Reference Removed Successfully");
     }
 
 

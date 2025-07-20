@@ -3,6 +3,7 @@ package com.pellanotes.pella.features.note;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,11 +11,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pellanotes.pella.common.dtos.SimpleResponse;
 import com.pellanotes.pella.database.models.User;
+import com.pellanotes.pella.features.note.dtos.AddNoteRefDto;
 import com.pellanotes.pella.features.note.dtos.CreateNoteDto;
 import com.pellanotes.pella.features.note.dtos.NoteBookDto;
 import com.pellanotes.pella.features.note.dtos.NoteBookResponse;
+import com.pellanotes.pella.features.note.dtos.NoteRefResponse;
 import com.pellanotes.pella.features.note.dtos.NoteResponse;
+import com.pellanotes.pella.features.note.dtos.RemoveNoteRefDto;
 import com.pellanotes.pella.features.note.dtos.RenameNoteBookDto;
 import com.pellanotes.pella.features.note.dtos.RenameNoteDto;
 import com.pellanotes.pella.features.note.dtos.UpdateNoteDto;
@@ -72,9 +77,19 @@ public class NoteController {
         return ResponseEntity.ok(this.noteService.renameNote(renameNoteDto));
     }
 
-    // add endpoints for adding and managing note references 
+   
     
+    @PostMapping("/reference")
+    public ResponseEntity<NoteRefResponse> addNoteReference(@RequestBody @Valid AddNoteRefDto addNoteRefDto) {
+        return ResponseEntity.ok(this.noteService.addNoteReference(addNoteRefDto));
+    }
+    
+    @DeleteMapping("/reference")
+    public ResponseEntity<SimpleResponse> removeNoteReference(@RequestBody @Valid RemoveNoteRefDto removeNoteRefDto) {
+        return ResponseEntity.ok(this.noteService.removeNoteReference(removeNoteRefDto));
+    }
 
+    // work on delete endpoint for notebook , note 
   
 
 }
