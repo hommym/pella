@@ -70,11 +70,10 @@ public class AuthService {
         if(userRepo.checkEmail(dto.email).isPresent())throw new ResourceConflict("User with this email already exist");
         else if (userRepo.checkUserName(dto.username).isPresent())throw new ResourceConflict("User with this username already exist");
 
-        User user= new User(dto.fullName,dto.email,passwdService.encryptPasswd(dto.password),dto.username);
-        user= userRepo.save(user);
-        // set up otp 
-        Otp otp= new Otp(user);
-        otp= otpRepo.save(otp);
+        Otp otp= new Otp();
+        User user= new User(dto.fullName,dto.email,passwdService.encryptPasswd(dto.password),dto.username,otp);
+        userRepo.save(user);
+        
 
         // sending congrats email
         emailService.sendSignUpEmail(dto.email, dto.username);

@@ -1,10 +1,12 @@
 package com.pellanotes.pella.database.models;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -35,7 +37,8 @@ public class User {
     @Column(name="is2fa_on",nullable=false)
     private  boolean is2FAOn=false;
 
-    
+    @OneToOne(mappedBy="user",cascade=CascadeType.PERSIST)
+    private Otp otp;
 
     //for JPA
     public User(){
@@ -43,12 +46,13 @@ public class User {
     }
 
 
-    public User(String fullName,String email,String endcPasswd,String username){
+    public User(String fullName,String email,String endcPasswd,String username,Otp otp){
         this.fullName=fullName;
         this.email=email;
         this.password=endcPasswd;
         this.username=username;
-        
+        this.otp=otp;
+        this.saveUserToOtp();
     }
 
 
@@ -73,6 +77,10 @@ public class User {
     //     return this.password;
     // }
 
+    private void saveUserToOtp(){
+        this.otp.user=this;
+    }
+
     public Long getId(){
         return this.id;
     }
@@ -91,6 +99,10 @@ public class User {
 
     public boolean check2FaStatus(){
         return this.is2FAOn;
+    }
+
+    public int getOtpCode(){
+        return this.otp.getOtpCode();
     }
 
   

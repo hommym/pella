@@ -17,7 +17,7 @@ public class Otp {
 
 
     @Column(nullable=false)
-    private Integer code;
+    private Integer code=this.generateCode(4);
 
 
     @OneToOne
@@ -32,7 +32,6 @@ public class Otp {
 
     public Otp(User user){
         this.user=user;
-        this.code=this.generateCode(4);
     }  
 
     private int generateCode(int numOfDigits){
@@ -46,7 +45,7 @@ public class Otp {
     }
 
     public int getOtpCode(){
-        return code.intValue();
+        return code;
     }
 
 
