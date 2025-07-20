@@ -1,9 +1,11 @@
 package com.pellanotes.pella.database.models;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
@@ -41,6 +44,8 @@ public class Note {
     @CreationTimestamp
     private LocalDate createdAt;
 
+    @OneToMany(mappedBy="note",fetch=FetchType.LAZY,orphanRemoval=true,cascade=CascadeType.REMOVE)
+    List<NoteReference> noteReferences;
 
     public Note(){ // for JPA
 
@@ -78,6 +83,10 @@ public class Note {
 
     public void setContent(String updatedContent){
         this.content=updatedContent;
+    }
+
+    public List<NoteReference> getReferences(){
+        return this.noteReferences;
     }
 
 }

@@ -23,36 +23,44 @@ public class NoteReference {
 
 
     @Column(name="note_id",insertable=false,updatable=false)
-    Long noteId;
+    private Long noteId;
 
 
     @ManyToOne
     @JoinColumn(name="note_id")
-    Note note;
+    private Note note;
 
 
-    private String link;
+    public String link;
 
 
     @Column(name="file_type")
     @Enumerated(EnumType.STRING) 
-    FileType fileType;
+    public   FileType fileType;
+
+
+    public  String reference;  // part of the note been referenced
 
 
     public NoteReference(){// for JPA
 
     }
 
-    public NoteReference(Note note,String link,FileType fileType){// for JPA
+    public NoteReference(Note note,String link,FileType fileType,String reference){
         this.note=note;
+        this.noteId=note.getId();
         this.link=link;
         this.fileType=fileType;
-
+        this.reference=reference;
     }
 
 
-    Long getId(){
+    public Long getId(){
       return this.id;
-  }
+    }
+
+    public Long getNoteId(){
+      return this.noteId;
+    }
 
 }
