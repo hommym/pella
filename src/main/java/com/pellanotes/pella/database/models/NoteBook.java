@@ -46,7 +46,7 @@ public class NoteBook {
     @JoinColumn(name="owner_id")
     private User owner;
 
-    @OneToMany(mappedBy = "noteBook",cascade = CascadeType.ALL,orphanRemoval=true,fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "noteBook",orphanRemoval=true,fetch=FetchType.EAGER)
     private  List<Note> notes;
 
     //For JPA

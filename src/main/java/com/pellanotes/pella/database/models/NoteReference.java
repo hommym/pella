@@ -1,5 +1,8 @@
 package com.pellanotes.pella.database.models;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.pellanotes.pella.database.enums.FileType;
 
 import jakarta.persistence.Column;
@@ -28,6 +31,7 @@ public class NoteReference {
 
     @ManyToOne
     @JoinColumn(name="note_id")
+    @OnDelete(action=OnDeleteAction.CASCADE)
     private Note note;
 
 

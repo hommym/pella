@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -38,13 +40,14 @@ public class Note {
 
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="note_book_id")
+    @OnDelete(action=OnDeleteAction.CASCADE)
     NoteBook noteBook;
 
     @Column(name="created_at")
     @CreationTimestamp
     private LocalDate createdAt;
 
-    @OneToMany(mappedBy="note",fetch=FetchType.LAZY,orphanRemoval=true,cascade=CascadeType.REMOVE)
+    @OneToMany(mappedBy="note",fetch=FetchType.EAGER,orphanRemoval=true)
     List<NoteReference> noteReferences;
 
     public Note(){ // for JPA
@@ -87,6 +90,10 @@ public class Note {
 
     public List<NoteReference> getReferences(){
         return this.noteReferences;
+    }
+
+    public NoteBook getBook(){
+        return this.noteBook;
     }
 
 }
