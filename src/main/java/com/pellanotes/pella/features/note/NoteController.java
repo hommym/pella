@@ -15,6 +15,8 @@ import com.pellanotes.pella.common.dtos.SimpleResponse;
 import com.pellanotes.pella.database.models.User;
 import com.pellanotes.pella.features.note.dtos.AddNoteRefDto;
 import com.pellanotes.pella.features.note.dtos.CreateNoteDto;
+import com.pellanotes.pella.features.note.dtos.DeleteNoteBookDto;
+import com.pellanotes.pella.features.note.dtos.DeleteNoteDto;
 import com.pellanotes.pella.features.note.dtos.NoteBookDto;
 import com.pellanotes.pella.features.note.dtos.NoteBookResponse;
 import com.pellanotes.pella.features.note.dtos.NoteRefResponse;
@@ -83,11 +85,25 @@ public class NoteController {
     public ResponseEntity<NoteRefResponse> addNoteReference(@RequestBody @Valid AddNoteRefDto addNoteRefDto) {
         return ResponseEntity.ok(this.noteService.addNoteReference(addNoteRefDto));
     }
+
+
+    @DeleteMapping("/book")
+    public ResponseEntity<SimpleResponse> deleteNoteBook(@RequestBody @Valid DeleteNoteBookDto delNoteBookDto,HttpServletRequest req){
+         return ResponseEntity.ok(this.noteService.deleteNoteBook(delNoteBookDto,(User) req.getAttribute("user")));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<SimpleResponse> deleteNote(@RequestBody @Valid DeleteNoteDto delNoteBookDto,HttpServletRequest req){
+         return ResponseEntity.ok(this.noteService.deleteNote(delNoteBookDto,(User) req.getAttribute("user")));
+    }
     
     @DeleteMapping("/reference")
     public ResponseEntity<SimpleResponse> removeNoteReference(@RequestBody @Valid RemoveNoteRefDto removeNoteRefDto) {
         return ResponseEntity.ok(this.noteService.removeNoteReference(removeNoteRefDto));
     }
+
+   
+
 
     // work on delete endpoint for notebook , note 
   

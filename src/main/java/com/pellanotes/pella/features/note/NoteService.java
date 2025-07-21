@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.pellanotes.pella.common.dtos.SimpleResponse;
 import com.pellanotes.pella.common.exceptions.ResourceConflict;
 import com.pellanotes.pella.common.exceptions.ResourceNotFound;
+import com.pellanotes.pella.common.exceptions.UnauthorizeRequest;
 import com.pellanotes.pella.database.models.Note;
 import com.pellanotes.pella.database.models.NoteBook;
 import com.pellanotes.pella.database.models.NoteReference;
@@ -18,6 +19,8 @@ import com.pellanotes.pella.database.repositories.NoteReferenceRepo;
 import com.pellanotes.pella.database.repositories.NoteRepo;
 import com.pellanotes.pella.features.note.dtos.AddNoteRefDto;
 import com.pellanotes.pella.features.note.dtos.CreateNoteDto;
+import com.pellanotes.pella.features.note.dtos.DeleteNoteBookDto;
+import com.pellanotes.pella.features.note.dtos.DeleteNoteDto;
 import com.pellanotes.pella.features.note.dtos.NoteBookDto;
 import com.pellanotes.pella.features.note.dtos.NoteBookResponse;
 import com.pellanotes.pella.features.note.dtos.NoteRefResponse;
@@ -102,17 +105,7 @@ public class NoteService {
         return bookResponse;
     }
 
-    @Transactional
-    public SimpleResponse deleteNoteBook (NoteBookDto dto,User user){
-        // Not Done With implementation
-        NoteBook book= this.checkNoteBook(user.getId(), dto.title,false);
-
-        // remove all notes in the book
-        // remove book
-
-        // this.noteBookRepo.removeNoteBook(book.getId());
-        return new SimpleResponse("NoteBook with title:"+dto.title+" has been deleted sucessfuly");
-    }
+  
 
 
     @Transactional
@@ -163,6 +156,38 @@ public class NoteService {
 
         return new NoteRefResponse(ref);
     }
+
+
+
+    @Transactional
+    public SimpleResponse deleteNoteBook (DeleteNoteBookDto dto,User user){
+        
+        Optional<NoteBook> book= this.noteBookRepo.findById(dto.noteBookId);
+        Long userId=user.getId();
+        
+        if(book.isEmpty())throw new ResourceNotFound("No note book with this id exist");
+        else if(!((book.get()).getOwnerId().equals(userId)))throw new UnauthorizeRequest("Deletion Failed,you can only delete note book you own");
+
+        //deleting note book and it notes
+        this.noteBookRepo.deleteById(dto.noteBookId);
+        return new SimpleResponse("NoteBook has been deleted sucessfuly");
+    }
+
+
+        @Transactional
+        public SimpleResponse deleteNote (DeleteNoteDto dto,User user){
+        
+        Optional<Note> note= this.noteRepo.findById(dto.noteId);
+        Long userId=user.getId();
+        
+        if(note.isEmpty())throw new ResourceNotFound("No note book with this id exist");
+        else if(!((note.get()).getBook().getOwnerId().equals(userId)))throw new UnauthorizeRequest("Deletion Failed,you can only delete notes you own");
+
+        //deleting notes and it references
+        this.noteRepo.deleteById(dto.noteId);
+        return new SimpleResponse("Note has been deleted sucessfuly");
+    }
+
 
     @Transactional
     public SimpleResponse removeNoteReference(RemoveNoteRefDto dto){
