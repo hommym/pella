@@ -33,6 +33,13 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
+
+
+springBoot {
+    // tell Boot plugin exactly which class to use
+    mainClass = 'com.pellanotes.pella.PellaApplication'
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
