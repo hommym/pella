@@ -1,13 +1,13 @@
 package com.pellanotes.pella.database.models;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -89,6 +89,7 @@ public class Note {
     }
 
     public List<NoteReference> getReferences(){
+        if(this.noteReferences==null) return new ArrayList<>();
         return this.noteReferences;
     }
 
