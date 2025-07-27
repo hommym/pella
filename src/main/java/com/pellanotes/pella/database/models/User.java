@@ -105,5 +105,9 @@ public class User {
         return this.otp.getOtpCode();
     }
 
+    public String getEmail(){
+        return this.email;
+    }
+
   
 }
