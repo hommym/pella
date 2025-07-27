@@ -3,6 +3,7 @@ package com.pellanotes.pella.common.handlers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -49,6 +50,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> unauthorizeRequestHandler(UnauthorizeRequest err){
         return new ResponseEntity<>(new ErrorResponse(err.getMessage(), 401),HttpStatus.UNAUTHORIZED);
     }
+
+
+     @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> invalidJsonBodytHandler(HttpMessageNotReadableException err){
+        return new ResponseEntity<>(new ErrorResponse("Invalid Json Format", 400),HttpStatus.BAD_REQUEST);
+    }
    
 
 
@@ -58,3 +65,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new ErrorResponse("Server Error", 500),HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
+
+
+// org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Unexpected character (',' (code 44)) in numeric value: Exponent indicator not followed by a digit - hnadle this error 
