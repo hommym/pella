@@ -14,7 +14,6 @@ import com.pellanotes.pella.database.embedables.SharedNoteId;
 import com.pellanotes.pella.database.models.Note;
 import com.pellanotes.pella.database.models.SharedNote;
 import com.pellanotes.pella.database.models.User;
-import com.pellanotes.pella.database.repositories.NoteRepo;
 import com.pellanotes.pella.database.repositories.SharedNoteRepo;
 import com.pellanotes.pella.features.auth.AuthService;
 import com.pellanotes.pella.features.note.NoteService;
@@ -28,14 +27,12 @@ import jakarta.transaction.Transactional;
 public class SharedNoteService {
     
 
-private final NoteRepo noteRepo;
 private final AuthService authService;
 private final NoteService noteService;
 private final SharedNoteRepo sharedNoteRepo;
 
 
-public SharedNoteService(NoteRepo noteRepo,AuthService authService,NoteService noteService,SharedNoteRepo sharedNoteRepo){
-this.noteRepo=noteRepo;
+public SharedNoteService(AuthService authService,NoteService noteService,SharedNoteRepo sharedNoteRepo){
 this.authService=authService;
 this.noteService=noteService;
 this.sharedNoteRepo=sharedNoteRepo;
@@ -59,7 +56,7 @@ public SharedNoteResponse shareNote(SharedNoteDto dto, User owner, boolean updat
     else if(owner.getEmail().equals(dto.recipientEmail))throw new ResourceConflict("Cannot share notes with yourself");
 
     SharedNoteId sharedId= new SharedNoteId(recipient.getId(),dto.noteId);
-    this.hasNoteBeenShared(sharedId,update?false:true);
+    this.hasNoteBeenShared(sharedId,!update);
     SharedNote shared= new SharedNote(sharedId,dto.accessType,note,recipient,owner);
     if(update){
         this.sharedNoteRepo.updateAccessType(recipient.getId(), note.getId(), dto.accessType);
