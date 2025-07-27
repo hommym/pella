@@ -47,6 +47,12 @@ public class NoteService {
         this.noteRefRepo=noteRefRepo;
     }
 
+    @Transactional
+    public Note isNoteIdValid(Long noteId){
+        Optional<Note> note= this.noteRepo.findById(noteId);
+        if(note.isEmpty())throw new ResourceNotFound("No Note with this id exist");
+        return note.get();
+    }
 
     @Transactional
     private NoteBook checkNoteBook(Long userId,String title, boolean throwErrIfPresent){
@@ -120,40 +126,28 @@ public class NoteService {
 
     @Transactional
     public NoteResponse renameNote(RenameNoteDto dto){
-        Optional<Note> note= this.noteRepo.findById(dto.noteId);
-
-        if(note.isEmpty())throw new ResourceNotFound("No Note with this id exist");
-
+        Note note= this.isNoteIdValid(dto.noteId);
         this.noteRepo.renameNote(dto.noteId, dto.newTitle);
-
-        (note.get()).setTitle(dto.newTitle);
+        note.setTitle(dto.newTitle);
         
-        return new NoteResponse(note.get());
+        return new NoteResponse(note);
     }
 
 
 
     @Transactional
     public NoteResponse updateNote(UpdateNoteDto dto){
-        Optional<Note> note= this.noteRepo.findById(dto.noteId);
-
-        if(note.isEmpty())throw new ResourceNotFound("No Note with this id exist");
-
+       Note note= this.isNoteIdValid(dto.noteId);
         this.noteRepo.updateNoteContent(dto.noteId, dto.updatedContent);
-
-        (note.get()).setContent(dto.updatedContent);
-        
-        return new NoteResponse(note.get());
+        note.setContent(dto.updatedContent);
+        return new NoteResponse(note);
     }
 
     @Transactional
     public NoteRefResponse addNoteReference(AddNoteRefDto dto){
-        Optional<Note> note= this.noteRepo.findById(dto.noteId);
-        if(note.isEmpty())throw new ResourceNotFound("No Note with this id exist");
-
-        NoteReference ref= new NoteReference(note.get(),dto.refMaterial,dto.fileType,dto.reference);
+        Note note= this.isNoteIdValid(dto.noteId);
+        NoteReference ref= new NoteReference(note,dto.refMaterial,dto.fileType,dto.reference);
         ref=this.noteRefRepo.save(ref);
-
         return new NoteRefResponse(ref);
     }
 
@@ -177,12 +171,10 @@ public class NoteService {
         @Transactional
         public SimpleResponse deleteNote (DeleteNoteDto dto,User user){
         
-        Optional<Note> note= this.noteRepo.findById(dto.noteId);
+        Note note= this.isNoteIdValid(dto.noteId);
         Long userId=user.getId();
-        
-        if(note.isEmpty())throw new ResourceNotFound("No note book with this id exist");
-        else if(!((note.get()).getBook().getOwnerId().equals(userId)))throw new UnauthorizeRequest("Deletion Failed,you can only delete notes you own");
 
+         if(!((note).getBook().getOwnerId().equals(userId)))throw new UnauthorizeRequest("Deletion Failed,you can only delete notes you own");
         //deleting notes and it references
         this.noteRepo.deleteById(dto.noteId);
         return new SimpleResponse("Note has been deleted sucessfuly");
