@@ -46,7 +46,7 @@ public class AuthService {
     }
 
     @Transactional
-    private  User isAccountValid(String email){
+    public  User isAccountValid(String email){
         Optional<User> user= this.userRepo.getUserByEmail(email);
         if(user.isEmpty()) throw new ResourceNotFound("No account with this "+email+" exit");
         return user.get();
