@@ -13,14 +13,13 @@ public class SharedNoteId implements Serializable{
     
     Long recipientId;
 
-    Long noteBookId;
+    Long noteId;
 
     public SharedNoteId() {} // needed for embeddables
 
-    public SharedNoteId(Long recipientId,Long noteBookId){
-
+    public SharedNoteId(Long recipientId,Long noteId){
             this.recipientId=recipientId;
-            this.noteBookId=noteBookId;
+            this.noteId=noteId;
     }
 
        @Override
@@ -29,12 +28,12 @@ public class SharedNoteId implements Serializable{
             if (!(o instanceof SharedNoteId)) return false;
             SharedNoteId that = (SharedNoteId) o;
             return Objects.equals(recipientId, that.recipientId) &&
-                Objects.equals(noteBookId, that.noteBookId);
+                Objects.equals(noteId, that.noteId);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(recipientId, noteBookId);
+            return Objects.hash(recipientId, noteId);
         }
 
 }
