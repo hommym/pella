@@ -8,7 +8,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -19,7 +19,7 @@ public class TaskComplete {
     @Column(name = "task_id",insertable=false,updatable=false,nullable = false)    
     private Long taskId;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "task_id")
     private Task task;
 
