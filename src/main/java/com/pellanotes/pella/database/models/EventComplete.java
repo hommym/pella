@@ -15,7 +15,7 @@ import jakarta.persistence.Table;
 @Table(name = "event_complete")
 public class EventComplete {
     @Id
-    @Column(name = "event_id",insertable=false,updatable=false)    
+    @Column(name = "event_id",insertable=false,updatable=false,nullable = false)    
     private Long eventId;
 
     @ManyToOne

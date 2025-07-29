@@ -1,15 +1,14 @@
 package com.pellanotes.pella.database.models;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.pellanotes.pella.database.enums.EventType;
+
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,14 +23,20 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;    
 
-    String title;
+    @Column(nullable =false)
+    private String title;
 
-    String description;
+    private String description;
 
-    @Enumerated(EnumType.STRING) 
-    private EventType type;
+    
+    @Column(name = "event_date",nullable = false)
+    private LocalDate eventDate;
 
-    @Column(name="user_id",insertable=false,updatable=false)
+
+    @Column(name = "event_time")
+    private LocalTime eventTime;
+
+    @Column(name="user_id",insertable=false,updatable=false,nullable = false)
     private Long userId;
 
     @ManyToOne
@@ -39,7 +44,7 @@ public class Event {
     User user;
 
 
-    @Column(name="created_at")
+    @Column(name="created_at",nullable = false)
     @CreationTimestamp
     private LocalDate createdAt;
 
@@ -48,10 +53,9 @@ public class Event {
 
     }
 
-    public Event(String title,String description,EventType type,User user){
+    public Event(String title,String description,User user){
         this.title = title;
         this.description = description;
-        this.type = type;
         this.user = user;
     }
 

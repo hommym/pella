@@ -20,17 +20,22 @@ private Long eventId;
 Event event;
 
 
-String repetition;
+
+Boolean rep=false;
+
 
 public EventReminder(){//jpa
 }
 
-public EventReminder(Event event,String repetition){//jpa
+public EventReminder(Event event){//jpa
     this.event=event;
-    this.repetition=repetition;
+   
 }
 
-
+public EventReminder(Event event,Boolean repeat){//jpa
+    this.event=event;
+    this.rep=repeat;
+}
 
 Long getId(){
     return this.eventId;
