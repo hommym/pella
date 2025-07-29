@@ -13,10 +13,12 @@ import com.pellanotes.pella.common.exceptions.UnauthorizeRequest;
 import com.pellanotes.pella.database.models.Note;
 import com.pellanotes.pella.database.models.NoteBook;
 import com.pellanotes.pella.database.models.NoteReference;
+import com.pellanotes.pella.database.models.SharedNote;
 import com.pellanotes.pella.database.models.User;
 import com.pellanotes.pella.database.repositories.NoteBookRepo;
 import com.pellanotes.pella.database.repositories.NoteReferenceRepo;
 import com.pellanotes.pella.database.repositories.NoteRepo;
+import com.pellanotes.pella.database.repositories.SharedNoteRepo;
 import com.pellanotes.pella.features.note.dtos.AddNoteRefDto;
 import com.pellanotes.pella.features.note.dtos.CreateNoteDto;
 import com.pellanotes.pella.features.note.dtos.DeleteNoteBookDto;
@@ -40,11 +42,13 @@ public class NoteService {
     private final NoteBookRepo noteBookRepo;
     private final NoteRepo noteRepo;
     private final NoteReferenceRepo noteRefRepo;
+    private final SharedNoteRepo sharedNoteRepo;
 
-    public NoteService(NoteBookRepo noteBookRepo, NoteRepo noteRepo,NoteReferenceRepo noteRefRepo){
+    public NoteService(NoteBookRepo noteBookRepo, NoteRepo noteRepo,NoteReferenceRepo noteRefRepo,SharedNoteRepo sharedNoteRepo){
         this.noteBookRepo=noteBookRepo;
         this.noteRepo=noteRepo;
         this.noteRefRepo=noteRefRepo;
+        this.sharedNoteRepo=sharedNoteRepo;
     }
 
     @Transactional
@@ -64,6 +68,13 @@ public class NoteService {
         return book.get();
     }
 
+
+    @Transactional
+    private boolean isEditAllowed(Long userId,NoteBook book,Long noteId){
+     // checking if notes has been shared with user with editor rights 
+     Optional<SharedNote> shared= this.sharedNoteRepo.getRecievedSharedNotesWithEditorAccess(userId, noteId);  
+    return (book.getOwnerId().equals(userId)) || shared.isPresent();   
+    }
 
     @Transactional
     private Object[] checkNoteInNoteBook(Long noteBookId,String noteTitle,boolean throwErrIfPresent){
@@ -115,18 +126,20 @@ public class NoteService {
 
 
     @Transactional
-    public NoteResponse createNote(CreateNoteDto dto){
+    public NoteResponse createNote(CreateNoteDto dto,User user){
         Object [] noteAndNoteBook= this.checkNoteInNoteBook(dto.noteBookId, dto.title, true);
-
-        Note note= new Note(dto.title,dto.content,(NoteBook) noteAndNoteBook[0]);
+        NoteBook book=(NoteBook) noteAndNoteBook[0];
+        if(!user.getId().equals(book.getOwnerId()))throw  new UnauthorizeRequest("Can only add notes to books you own");
+        Note note= new Note(dto.title,dto.content,book);
         note=this.noteRepo.save(note);
 
         return new NoteResponse(note);
     }
 
     @Transactional
-    public NoteResponse renameNote(RenameNoteDto dto){
+    public NoteResponse renameNote(RenameNoteDto dto,User user){
         Note note= this.isNoteIdValid(dto.noteId);
+        if(!note.getBook().getOwnerId().equals(user.getId()))throw new UnauthorizeRequest("Can only rename notes you own");
         this.noteRepo.renameNote(dto.noteId, dto.newTitle);
         note.setTitle(dto.newTitle);
         
@@ -136,16 +149,19 @@ public class NoteService {
 
 
     @Transactional
-    public NoteResponse updateNote(UpdateNoteDto dto){
-       Note note= this.isNoteIdValid(dto.noteId);
+    public NoteResponse updateNote(UpdateNoteDto dto,User user){
+        Note note= this.isNoteIdValid(dto.noteId);
+        //check if user has is authorised to do change
+        if(!this.isEditAllowed(user.getId(), note.getBook(), dto.noteId))throw new UnauthorizeRequest("Can Only update notes you own or have Editor access to");
         this.noteRepo.updateNoteContent(dto.noteId, dto.updatedContent);
         note.setContent(dto.updatedContent);
         return new NoteResponse(note);
     }
 
     @Transactional
-    public NoteRefResponse addNoteReference(AddNoteRefDto dto){
+    public NoteRefResponse addNoteReference(AddNoteRefDto dto,User user){
         Note note= this.isNoteIdValid(dto.noteId);
+         if(!note.getBook().getOwnerId().equals(user.getId()))throw new UnauthorizeRequest("Can only add ref to  notes you own");
         NoteReference ref= new NoteReference(note,dto.refMaterial,dto.fileType,dto.reference);
         ref=this.noteRefRepo.save(ref);
         return new NoteRefResponse(ref);

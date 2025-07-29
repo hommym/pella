@@ -63,27 +63,27 @@ public class NoteController {
     
 
     @PostMapping
-    public ResponseEntity<NoteResponse> createNote(@RequestBody @Valid CreateNoteDto createNoteDto) {
-        return ResponseEntity.ok(this.noteService.createNote(createNoteDto));
+    public ResponseEntity<NoteResponse> createNote(@RequestBody @Valid CreateNoteDto createNoteDto,HttpServletRequest req) {
+        return ResponseEntity.ok(this.noteService.createNote(createNoteDto,(User) req.getAttribute("user")));
     }
 
 
 
     @PatchMapping
-    public ResponseEntity<NoteResponse> updateNoteContent(@RequestBody @Valid UpdateNoteDto updateNoteDto){
-        return ResponseEntity.ok(this.noteService.updateNote(updateNoteDto));
+    public ResponseEntity<NoteResponse> updateNoteContent(@RequestBody @Valid UpdateNoteDto updateNoteDto,HttpServletRequest req){
+        return ResponseEntity.ok(this.noteService.updateNote(updateNoteDto,(User) req.getAttribute("user")));
     }
 
     @PatchMapping("/rename")
-    public ResponseEntity<NoteResponse> renameNote(@RequestBody @Valid RenameNoteDto renameNoteDto){
-        return ResponseEntity.ok(this.noteService.renameNote(renameNoteDto));
+    public ResponseEntity<NoteResponse> renameNote(@RequestBody @Valid RenameNoteDto renameNoteDto,HttpServletRequest req){
+        return ResponseEntity.ok(this.noteService.renameNote(renameNoteDto,(User) req.getAttribute("user")));
     }
 
    
     
     @PostMapping("/reference")
-    public ResponseEntity<NoteRefResponse> addNoteReference(@RequestBody @Valid AddNoteRefDto addNoteRefDto) {
-        return ResponseEntity.ok(this.noteService.addNoteReference(addNoteRefDto));
+    public ResponseEntity<NoteRefResponse> addNoteReference(@RequestBody @Valid AddNoteRefDto addNoteRefDto,HttpServletRequest req) {
+        return ResponseEntity.ok(this.noteService.addNoteReference(addNoteRefDto,(User) req.getAttribute("user")));
     }
 
 

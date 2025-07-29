@@ -12,7 +12,7 @@ public class SignUpDto {
     
     
 
-    @NotBlank(message="No value found for name")
+    @NotBlank(message="No value found for fullName")
     public String fullName;
 
 
