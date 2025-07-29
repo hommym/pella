@@ -20,7 +20,7 @@ private Long eventId;
 Event event;
 
 
-
+@Column(nullable = false)
 Boolean rep=false;
 
 
