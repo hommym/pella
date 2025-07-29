@@ -59,7 +59,7 @@ public SharedNoteResponse shareNote(SharedNoteDto dto, User owner, boolean updat
     this.hasNoteBeenShared(sharedId,!update);
     SharedNote shared= new SharedNote(sharedId,dto.accessType,note,recipient,owner);
     if(update){
-        this.sharedNoteRepo.updateAccessType(recipient.getId(), note.getId(), dto.accessType);
+        this.sharedNoteRepo.updateAccessType(recipient.getId(), note.getId(), dto.accessType.toString());
     }
     else shared=this.sharedNoteRepo.save(shared);
     return new SharedNoteResponse(shared);
