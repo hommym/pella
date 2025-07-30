@@ -5,8 +5,6 @@ import java.time.LocalTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,24 +22,24 @@ public class Event {
     private Long id;    
 
     @Column(nullable =false)
-    private String title;
+    public String title;
 
-    private String description;
+    public String description;
 
     
     @Column(name = "event_date",nullable = false)
-    private LocalDate eventDate;
+    public LocalDate eventDate;
 
 
     @Column(name = "event_time")
-    private LocalTime eventTime;
+    public LocalTime eventTime;
 
     @Column(name="user_id",insertable=false,updatable=false,nullable = false)
     private Long userId;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    User user;
+    private User user;
 
 
     @Column(name="created_at",nullable = false)
@@ -49,19 +47,31 @@ public class Event {
     private LocalDate createdAt;
 
 
+    @Column(nullable=false)
+    public Boolean repe;
+
+
+
+
     public Event(){// jpa
 
     }
 
-    public Event(String title,String description,User user){
+    public Event(String title,String description,User user,LocalDate date,LocalTime time,Boolean repeat){
         this.title = title;
         this.description = description;
         this.user = user;
+        this.userId=user.getId();
+        this.eventDate=date;
+        this.eventTime=time;
+        this.repe= repeat!=null?repeat:false;
     }
 
 
     Long getId(){
         return this.id;
     }
+
+  
 
 }

@@ -2,7 +2,6 @@ package com.pellanotes.pella.database.models;
 
 import java.time.LocalDate;
 
-
 import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.Column;
@@ -38,6 +37,9 @@ public class Goal {
     @Column(name="created_at",nullable = false)
     @CreationTimestamp
     private LocalDate createdAt;
+
+    @Column(name="completion_date")
+    private LocalDate completionDate;
     
 
 

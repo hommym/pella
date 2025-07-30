@@ -1,5 +1,8 @@
 package com.pellanotes.pella.database.models;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.pellanotes.pella.database.embedables.SharedNoteId;
 import com.pellanotes.pella.database.enums.NoteAccessType;
 
@@ -32,6 +35,7 @@ public class SharedNote {
     @ManyToOne
     @MapsId("noteId")
     @JoinColumn(name="note_id")
+    @OnDelete(action=OnDeleteAction.CASCADE)
     Note note;
 
 
